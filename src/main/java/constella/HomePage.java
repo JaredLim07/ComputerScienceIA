@@ -16,13 +16,13 @@ public class HomePage extends JPanel {
     JComboBox<String> companyList;
     static DB myDB;
 
-    public HomePage(MainWindow parent){
+    public HomePage(MainWindow parent) {
         super();
         this.parent = parent;
         init();
     }
 
-    public void init(){
+    public void init() {
         myDB = new DB();
 
         JPanel chartPanel = new XChartPanel<PieChart>(getPieChart());
@@ -30,6 +30,7 @@ public class HomePage extends JPanel {
         add(dropdown());
         add(goButton());
         add(addCustomerButton());
+        add(deleteCustomerButton());
 
         setBackground(new Color(222, 222, 222));
         setBounds(0, 0, 480, 800);
@@ -43,10 +44,10 @@ public class HomePage extends JPanel {
         chart.getStyler().setLegendLayout(Styler.LegendLayout.Horizontal);
 
         chart.getStyler().setSeriesColors(new Color[]{
-                        Color.GREEN,
-                        Color.YELLOW,
-                        Color.RED
-                });
+                Color.GREEN,
+                Color.YELLOW,
+                Color.RED
+        });
 
         chart.addSeries("Satisfied", myDB.satisfiedCompanies());
         chart.addSeries("Ok", myDB.okCompanies());
@@ -55,7 +56,8 @@ public class HomePage extends JPanel {
         return chart;
 
     }
-    public void addCompaniesToDropdown(){
+
+    public void addCompaniesToDropdown() {
         var companies = myDB.getCompanyName();
         String[] companyArray = (String[]) companies.toArray(new String[0]);
         companyList.removeAllItems();
@@ -66,7 +68,8 @@ public class HomePage extends JPanel {
         companyList.revalidate();
         companyList.repaint();
     }
-    private JComboBox<String> dropdown(){
+
+    private JComboBox<String> dropdown() {
 
         var companies = myDB.getCompanyName();
         String[] companyArray = (String[]) companies.toArray(new String[0]);
@@ -77,12 +80,18 @@ public class HomePage extends JPanel {
         return companyList;
     }
 
-    private JButton goButton(){
+    private JButton goButton() {
         JButton go = new JButton("GO");
-        String selectedCompany = (String) companyList.getSelectedItem();
+        //String selectedCompany = (String) companyList.getSelectedItem();
+
+        //System.out.println("selceted company = " + selectedCompany);
+
         go.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                String selectedCompany = (String) companyList.getSelectedItem();
+
+                System.out.println("selceted company = " + selectedCompany);
                 parent.removeAndAdd(selectedCompany);
                 //companyList.getSelectedItem();
                 //parent.addPanel();
@@ -92,7 +101,7 @@ public class HomePage extends JPanel {
         return go;
     }
 
-    private JButton addCustomerButton(){
+    private JButton addCustomerButton() {
         JButton add = new JButton("Add Customer");
 
         add.addActionListener(new AbstractAction() {
@@ -111,4 +120,26 @@ public class HomePage extends JPanel {
         });
         return add;
     }
+
+    private JButton deleteCustomerButton() {
+        JButton delete = new JButton("Delete Selected Customer");
+        delete.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String selectedCompany = (String) companyList.getSelectedItem();
+
+                if (selectedCompany != null) {
+                    int confirm = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete the company " + selectedCompany + "?", "Confirm Deletion", JOptionPane.YES_NO_OPTION);
+
+                    if (confirm == JOptionPane.YES_OPTION) {
+                        companyList.removeItem(selectedCompany);
+                        myDB.deleteCompany(selectedCompany);
+                    }
+                }
+            }
+        });
+
+        return delete;
+    }
 }
+

@@ -20,6 +20,8 @@ public class CustomerStatusPage extends JPanel {
         super();
         this.parent = parent;
         companyInfo = db.getCompanyInfo(companyName);
+
+        System.out.println("Company info =" + companyInfo);
         init(db, companyName);
     }
 
@@ -48,7 +50,7 @@ public class CustomerStatusPage extends JPanel {
 
         topPanel.add(saveButton(db, companyName));
 
-        // add(backButton());
+        topPanel.add(backButton());
 
 
 

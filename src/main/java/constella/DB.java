@@ -98,6 +98,16 @@ public class DB {
         }
     }
 
+    public void deleteCompany(String companyName){
+        try {
+            Statement stmt = conn.createStatement();
+            stmt.execute("DELETE FROM companies WHERE name = '" + companyName + "'");
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public int satisfiedCompanies(){
         return 1;
     }
